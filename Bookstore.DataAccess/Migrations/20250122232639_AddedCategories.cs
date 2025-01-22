@@ -7,7 +7,7 @@
 namespace Bookstore.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class AddCategoryAndSeed : Migration
+    public partial class AddedCategories : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
