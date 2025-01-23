@@ -15,7 +15,25 @@ namespace Bookstore.DataAccess.Repository
 
         public void Update(Product product)
         {
-            _context.Products.Update(product);
+            var productFromDB = _context.Products.FirstOrDefault(p => p.Id == product.Id);
+
+            if (productFromDB != null)
+            {
+                productFromDB.Title = product.Title;
+                productFromDB.ISBN = product.ISBN;
+                productFromDB.Price = product.Price;
+                productFromDB.Price50 = product.Price50;
+                productFromDB.Price100 = product.Price100;
+                productFromDB.ListPrice = product.ListPrice;
+                productFromDB.Description = product.Description;
+                productFromDB.CategoryId = product.CategoryId;
+                productFromDB.Author = product.Author;
+
+                if (product.ImageUrl != null)
+                {
+                    productFromDB.ImageUrl = product.ImageUrl;
+                }
+            }
         }
     }
 }
