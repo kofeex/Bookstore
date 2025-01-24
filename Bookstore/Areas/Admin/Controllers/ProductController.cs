@@ -99,38 +99,39 @@ namespace Bookstore.Areas.Admin.Controllers
             }
         }
 
+        #region API CALLS
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var products = _uow.ProductRepository.GetAll(includeProperties: "Category");
+
+            return Json(new { data = products });
+        }
+
+        [HttpDelete]
         public IActionResult Delete(int? id)
         {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-
-            var product = _uow.ProductRepository.Get(p => p.Id == id);
+            var product = _uow.ProductRepository.Get(p =>p.Id == id);
 
             if (product == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Error while deleteing!" });
             }
 
-            return View(product);
-        }
+            var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, product.ImageUrl.TrimStart('\\'));
 
-        [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePOST(int? id)
-        {
-            var prodcut = _uow.ProductRepository.Get(p => p.Id == id);
-
-            if (prodcut == null)
+            if (System.IO.File.Exists(oldImagePath))
             {
-                return NotFound();
+                System.IO.File.Delete(oldImagePath);
             }
 
-            _uow.ProductRepository.Remove(prodcut);
+            _uow.ProductRepository.Remove(product);
             _uow.Save();
-            TempData["success"] = "Product deleted successfuly";
 
-            return RedirectToAction("Index");
+            return Json(new { success = true, message = "Delete successfull!" });
         }
+
+        #endregion
     }
 }
