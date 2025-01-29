@@ -1,6 +1,8 @@
 using System.Diagnostics;
+using System.Security.Claims;
 using Bookstore.DataAccess.Repository.IRepository;
 using Bookstore.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookstore.Areas.Customer.Controllers
@@ -26,9 +28,29 @@ namespace Bookstore.Areas.Customer.Controllers
 
         public IActionResult Details(int id)
         {
-            Product product = _uow.ProductRepository.Get(p => p.Id == id, includeProperties: "Category");
+            var cart = new ShoppingCart()
+            {
+                Product = _uow.ProductRepository.Get(p => p.Id == id, includeProperties: "Category"),
+                Count = 1,
+                ProductId = id
+            };
+            
 
-            return View(product);
+            return View(cart);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult Details(ShoppingCart cart)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity!;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            cart.ApplicationUserId = userId;
+
+            _uow.ShoppingCartRepository.Add(cart);
+            _uow.Save();
+
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Privacy()
