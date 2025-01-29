@@ -83,14 +83,16 @@ namespace Bookstore.Areas.Admin.Controllers
                 if (productVM.Product.Id == 0)
                 {
                     _uow.ProductRepository.Add(productVM.Product);
+                    TempData["success"] = "Product created successfuly";
                 }
                 else
                 {
                     _uow.ProductRepository.Update(productVM.Product);
+                    TempData["success"] = "Product updated successfuly";
                 }
 
                 _uow.Save();
-                TempData["success"] = "Product created successfuly";
+                
                 return RedirectToAction("Index");
             }
             else

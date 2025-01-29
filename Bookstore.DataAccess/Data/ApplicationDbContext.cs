@@ -9,12 +9,13 @@ namespace Bookstore.DataAccess.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-                        
+
         }
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<Company> Companies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,6 +25,39 @@ namespace Bookstore.DataAccess.Data
                 new Category { Id = 1, Name = "Action", DisplayOrder = 1 },
                 new Category { Id = 2, Name = "SciFi", DisplayOrder = 2 },
                 new Category { Id = 3, Name = "History", DisplayOrder = 3 }
+                );
+
+            modelBuilder.Entity<Company>().HasData(
+                new Company
+                {
+                    Id = 1,
+                    Name = "Knife Company",
+                    City = "Sofia",
+                    State = "Bulgaria",
+                    StreetAddress = "Valeri Bozinov 123",
+                    PhoneNumber = "123456",
+                    PostalCode = "112234"
+                },
+                new Company
+                {
+                    Id = 2,
+                    Name = "Lele Company",
+                    City = "Vranje",
+                    State = "Serbia",
+                    StreetAddress = "Dejan Osmanovic 223",
+                    PhoneNumber = "1342555",
+                    PostalCode = "657478"
+                },
+                new Company
+                {
+                    Id = 3,
+                    Name = "Pandev Company",
+                    City = "Skopje",
+                    State = "North Macedonia",
+                    StreetAddress = "TJ Shorts 22",
+                    PhoneNumber = "13424356",
+                    PostalCode = "6572333"
+                }
                 );
 
             modelBuilder.Entity<Product>().HasData(
