@@ -47,7 +47,20 @@ namespace Bookstore.Areas.Customer.Controllers
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             cart.ApplicationUserId = userId;
 
-            _uow.ShoppingCartRepository.Add(cart);
+            var cartFromDb = _uow.ShoppingCartRepository
+                .Get(u => u.ApplicationUserId == userId && u.ProductId == cart.ProductId);
+
+            if (cartFromDb != null)
+            {
+                cartFromDb.Count += cart.Count;
+                _uow.ShoppingCartRepository.Update(cartFromDb);
+            }
+            else
+            {
+                _uow.ShoppingCartRepository.Add(cart);
+            }
+
+            TempData["success"] = "Cart updated successfully";
             _uow.Save();
 
             return RedirectToAction(nameof(Index));
